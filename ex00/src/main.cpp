@@ -27,7 +27,7 @@ int	main( int ac, char **av ){
 		parsing_db2(av[1], db2);
 		
 	}
-	catch (std::runtime_error e){
+	catch (std::runtime_error& e){
 		std::cout << "Error: " << e.what() << '\n';
 		return (1);
 	}

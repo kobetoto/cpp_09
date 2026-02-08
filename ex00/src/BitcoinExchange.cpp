@@ -47,17 +47,16 @@ void	parsing_db2(const std::string& file_name, Data_b2 *db2){
 
 	//
 	std::map<std::string, int> m;
+	/*
 	m["have to fil db2->_map with key value frome input file"]=42;
 	std::map<std::string, int>::const_iterator it = m.begin();
 	std::cout << it->first << '\n';
 	std::cout << it->second<< '\n';
+	*/
 
-	/*
-	// one line
 	std::string line;
 
 	// extract all the text from the input file
 	while (getline(input_stream, line))
 		std::cout << "To store: " << line << '\n';
-	*/
 }
