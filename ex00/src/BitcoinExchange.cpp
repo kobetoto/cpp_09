@@ -57,6 +57,16 @@ void	parsing_db2(const std::string& file_name, Data_b2 *db2){
 	std::string line;
 
 	// extract all the text from the input file
-	while (getline(input_stream, line))
+	while (getline(input_stream, line)){
+
 		std::cout << "To store: " << line << '\n';
+		
+		//check_line() => check date() | check amout()
+			//if ok: continue
+			//else fill
+		//split line: date | amount 
+		//
+		//m[date]=amount
+
+	}
 }
