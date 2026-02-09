@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thodavid <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: kobe <kobe@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 15:43:04 by thodavid          #+#    #+#             */
-/*   Updated: 2026/02/04 15:43:54 by thodavid         ###   ########.fr       */
+/*   Updated: 2026/02/09 15:41:23 by kobe             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,9 @@ int	main( int ac, char **av ){
 			return (1);
 		}
 		check_arg(av[1], ".txt", 3);
-
 		Data_b2 *db2 = new Data_b2();
 		parsing_db2(av[1], db2);
-		
+		delete db2;
 	}
 	catch (std::runtime_error& e){
 		std::cout << "Error: " << e.what() << '\n';

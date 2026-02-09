@@ -3,12 +3,7 @@
 #include <stdlib.h>     /* atoi */
 #include <cstring>
 #include <string>
-enum Error_line{
-  FORM_ERR,
-  DATE_ERR,
-  AMOUNT_ERR,
-  ALL_GOOD
-};
+
 
 bool check_date(std::string s){
   std::string const y = s.substr(0,4);
@@ -28,17 +23,31 @@ bool check_date(std::string s){
   return (true);
 }
 
+bool check_float(std::string &s){
+  float amount = std::stof(s.c_str());
+  if (amount < 0.1 || amount > 1000.0)
+    return (false);
+  else 
+    return (true);
+}
+
+bool check_int(std::string s){
+  int amount = std::stoi(s.c_str());
+  if (amount < 1 || amount > 1000)
+    return (false);
+  else 
+    return (true);
+}
+
 bool check_amount(std::string s){
   bool is_float = false;
   if (s.find('.') == 1)
     is_float = true;
-  std::cout << "s.find():: " << s.find('.') <<'\n';
-  std::cout << "is_float:: " << is_float <<'\n';
-  unsigned int amount = std::atoi(s.c_str());
-  std::cout << "atoi:: " << amount <<'\n';
-  if (amount < 1 || amount > 10000)
-    return (false);
-  return (false);
+
+  if(is_float)
+    return (check_float(s));
+  else 
+    return (check_int(s));
 }
 
 Error_line check_line(std::string &line){
@@ -53,7 +62,7 @@ Error_line check_line(std::string &line){
 
 int main(void){
 
-  std::string line_dateErr = "2010-12-31 | 4.2";
+  std::string line_toLarge = "2012-01-11 | 2147483648";
   /*
   std::string line_toLarge = "2012-01-11 | 2147483648";
   std::string line_negInt = "2012-01-11 | -1";
@@ -62,7 +71,7 @@ int main(void){
   std::string line_ok = "2012-06-13 | 42";
   */
 
-  std::cout << check_line(line_dateErr) << '\n';
+  std::cout << check_line(line_toLarge)  << '\n';
 
 
   return (0);
