@@ -3,65 +3,44 @@
 /*                                                        :::      ::::::::   */
 /*   BitcoinExchange.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kobe <kobe@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: thodavid <thodavid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 07:33:16 by thodavid          #+#    #+#             */
-/*   Updated: 2026/02/09 15:42:16 by kobe             ###   ########.fr       */
+/*   Updated: 2026/02/13 11:20:38 by thodavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BitcoinExchange.hpp"
 
-/*
-  _ __   __ _ _ __ ___ _ _ __   __ _
- | '_ \ / _` | '__/ __| | '_ \ / _` |
- | |_) | (_| | |  \__ \ | | | | (_| |
- | .__/ \__,_|_|  |___/_|_| |_|\__, |
- | |                            __/ |
- |_|                           |___/
-*/
 
-/* MAIN */
-void parsing_db2(const std::string &file_name, Data_b2 *db2)
+
+//
+// Parsing input file
+// Try to open it + check and print line
+// Print err msg if something wrong
+// Else print the rslt
+//
+
+/**
+ *UTILS 
+ */
+void error(const std::string &s){ throw(std::runtime_error(s)); }
+std::string get_date(std::string s) { return (s.substr(0, 10)); }
+std::string get_value(std::string s) { return (s.substr(13, s.size())); }
+
+
+/**
+ * PARSING INPUT
+ */
+Error_line check_line(std::string &line)
 {
-
-	(void)db2;
-	// checkfile
-	const char *cstr = file_name.c_str();
-	std::ifstream input_stream(cstr);
-	if (!input_stream)
-		error("Can't open input file");
-
-	// extract all the text from the input file and store it to db2
-	std::string line;
-	while (getline(input_stream, line))
-	{
-		Error_line e = check_line(line);
-		if (e == ALL_GOOD)
-			std::cout << line << " => ..." << "ICI JE DOIS ADD MA SOLUTION" <<'\n'; 
-		else if (e == FORM_ERR)
-			std::cout << "Error:: invalid format" << '\n'; 
-		else if (e == DATE_ERR)
-			std::cout << "Error:: invalid date" << '\n'; 
-		else if (e == AMOUNT_ERR)
-			std::cout << "Error:: invalid amount" << '\n'; 
-		store_line(line, db2->_map, e);
-	}
-/*
-	for (std::multimap<std::string, double>::iterator it = db2->_map.begin(); it != db2->_map.end(); it++)
-	{
-		std::cout << it->first << " => ";
-		std::cout << it->second;
-		std::cout << '\n';
-	}
-*/
-}
-
-/* UTILS */
-
-void error(const std::string &s)
-{
-	throw(std::runtime_error(s));
+	if (line[11] != '|' || line[10] != ' ' || line[12] != ' ')
+		return (FORM_ERR);
+	if (!check_date(line.substr(0, 10)))
+		return (DATE_ERR);
+	else if (!check_amount(line.substr(13, line.size())))
+		return (AMOUNT_ERR);
+	return (ALL_GOOD);
 }
 
 bool check_date(std::string s)
@@ -92,56 +71,36 @@ bool check_amount(std::string s)
 		return (true);
 }
 
-// get date / value
-std::string get_date(std::string s) { return (s.substr(0, 10)); }
-std::string get_value(std::string s) { return (s.substr(13, s.size())); }
+//
+// Print the result:
+// 			BTC price * N.btc
+// to do that:
+//			-open history database (aka db)
+//			-store the date / value in map container
+//			-associate date line(input_file) <==> date (db)
+//			-do the math and print it
 
-/* parsing f()*/
+void	store_data(std::map<std::string, double> &map){
 
-void check_arg(const std::string &arg, const std::string &format, size_t ext_size)
-{
-
-	// check arguments size
-	if (arg.size() < 3)
-		error("Invalid input");
-	if (format.size() < ext_size)
-		error("Invalid format");
-	// compare extention to the format
-	std::string cmp = "";
-	int i = 0;
-	for (std::string::const_reverse_iterator rit = arg.rbegin(); i < 4; i++)
-	{
-		if (*rit != format[ext_size--])
-			error("Invalid input");
-		++rit;
-	}
-	return;
+		(void) map;
+		std::ifstream input_stream("data.csv");
+		if (!input_stream)
+			error("Can't open data.csv");
+		std::string line;
+		while (getline(input_stream, line))
+		{
+			std::string date  = line.substr (0,10);
+			std::size_t pos = line.find(",");
+			std::string price = line.substr (pos + 1);
+			map.insert(
+				std::pair<std::string, double>(date, atof(price.c_str()))
+			);
+		}
 }
 
-Error_line check_line(std::string &line)
-{
-	if (line[11] != '|' || line[10] != ' ' || line[12] != ' ')
-		return (FORM_ERR);
-	if (!check_date(line.substr(0, 10)))
-		return (DATE_ERR);
-	else if (!check_amount(line.substr(13, line.size())))
-		return (AMOUNT_ERR);
-	return (ALL_GOOD);
-}
 
-void store_line(std::string &line, std::multimap<std::string, double> &m, Error_line e)
-{
-	if (e == 3)
-	{
-		std::string date = get_date(line);
-		std::string amount = get_value(line);
-		m.insert(std::pair<std::string, double>(date, atof(amount.c_str())));
-	}
-	//  first.insert(std::pair<char,int>('b',15));
-	else if (e == 0)
-		m.insert(std::pair<std::string, double>("Error:: Format", 0));
-	else if (e == 1)
-		m.insert(std::pair<std::string, double>("Error:: Date", 0));
-	else if (e == 2)
-		m.insert(std::pair<std::string,double>("Error:: Amount", 0));
+std::string	print_rslt(std::string &line){
+
+	(void) line;
+	return ("hello from print_r");
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kobe <kobe@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: thodavid <thodavid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 15:43:04 by thodavid          #+#    #+#             */
-/*   Updated: 2026/02/09 15:41:23 by kobe             ###   ########.fr       */
+/*   Updated: 2026/02/13 11:21:02 by thodavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,40 @@
 
 int	main( int ac, char **av ){
 
-	try{	
+	try
+	{
+		// checkfile (check arg)
 		if(ac != 2 || *av[1] == '\0'){
-			error("Enter one valid input file");
+			error("Enter one valid file");
 			return (1);
 		}
-		check_arg(av[1], ".txt", 3);
-		Data_b2 *db2 = new Data_b2();
-		parsing_db2(av[1], db2);
-		delete db2;
+		const char *cstr = av[1];
+		std::ifstream input_stream(cstr);
+		if (!input_stream)
+			error("Can't open file");
+
+		//store data.csv in map
+		std::map<std::string, double> map;
+		store_data(map);
+
+		// check and print line
+		std::string line;
+		while (getline(input_stream, line))
+		{
+			Error_line e = check_line(line);
+			if (e == ALL_GOOD){
+				std::cout << get_date(line) << " => "
+				<< get_value(line)
+				<< " = "
+				<< print_rslt(line) <<'\n'; 
+			}
+			else if (e == FORM_ERR)
+				std::cout << "Error:: invalid format" << '\n'; 
+			else if (e == DATE_ERR)
+				std::cout << "Error:: invalid date" << '\n'; 
+			else if (e == AMOUNT_ERR)
+				std::cout << "Error:: invalid amount" << '\n'; 
+		}
 	}
 	catch (std::runtime_error& e){
 		std::cout << "Error: " << e.what() << '\n';
