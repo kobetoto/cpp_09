@@ -6,7 +6,7 @@
 /*   By: thodavid <thodavid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 07:33:23 by thodavid          #+#    #+#             */
-/*   Updated: 2026/02/13 11:17:44 by thodavid         ###   ########.fr       */
+/*   Updated: 2026/02/16 13:45:51 by thodavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include <utility>
 #include <string>
 #include <fstream>
-#include <stdlib.h>     /* atoi */
+#include <stdlib.h> /* atoi */
 #include <cstring>
 
 enum Error_line{
@@ -30,15 +30,19 @@ enum Error_line{
   ALL_GOOD
 };
 
-void		error(const std::string& s);
-bool 		check_amount(std::string s);
-bool 		check_date(std::string s);
-Error_line 	check_line(std::string &line);
-std::string	print_rslt(std::string &line);
+void				error(const std::string& s);
+void				store_data(std::map<std::string, double> &map);
 
-void	store_data(std::map<std::string, double> &map);
+bool 				check_amount(std::string s);
+bool 				check_date(std::string s);
+
+float			print_rslt(std::string &date,
+						std::string &amount,
+						const std::map<std::string, double> &map);
 
 std::string get_date(std::string s) ;
-std::string get_value(std::string s);
+std::string get_amount(std::string s);
+
+Error_line 	check_line(std::string &line);
 
 #endif	//BITCOINEXCHANGE_HPP

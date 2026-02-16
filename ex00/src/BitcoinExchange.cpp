@@ -6,7 +6,7 @@
 /*   By: thodavid <thodavid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 07:33:16 by thodavid          #+#    #+#             */
-/*   Updated: 2026/02/13 11:20:38 by thodavid         ###   ########.fr       */
+/*   Updated: 2026/02/16 13:45:45 by thodavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
  */
 void error(const std::string &s){ throw(std::runtime_error(s)); }
 std::string get_date(std::string s) { return (s.substr(0, 10)); }
-std::string get_value(std::string s) { return (s.substr(13, s.size())); }
+std::string get_amount(std::string s) { return (s.substr(13, s.size())); }
 
 
 /**
@@ -81,8 +81,6 @@ bool check_amount(std::string s)
 //			-do the math and print it
 
 void	store_data(std::map<std::string, double> &map){
-
-		(void) map;
 		std::ifstream input_stream("data.csv");
 		if (!input_stream)
 			error("Can't open data.csv");
@@ -92,15 +90,41 @@ void	store_data(std::map<std::string, double> &map){
 			std::string date  = line.substr (0,10);
 			std::size_t pos = line.find(",");
 			std::string price = line.substr (pos + 1);
+			double d = atof(price.c_str());
 			map.insert(
-				std::pair<std::string, double>(date, atof(price.c_str()))
-			);
+				std::pair<std::string, double>(date, d));
 		}
 }
 
 
-std::string	print_rslt(std::string &line){
+std::map<std::string, double>::const_iterator closest_date(std::string &date,
+						const std::map<std::string, double> &map){
+	for( std::map<std::string, double>::const_iterator it = map.begin(); it != map.end(); ++it)
+	{
+		if (date < it->first)
+			return it;
+	}
+		return(map.end());
+}
 
-	(void) line;
-	return ("hello from print_r");
+
+//chercher dans map la bonne valeur a la bonne date si pas la bonne date la plus proche
+
+// multiplier par amount
+float	print_rslt(std::string &date,
+						std::string &amount,
+						const std::map<std::string, double> &map){
+
+	std::map<std::string, double>::const_iterator it;
+	it = map.find(date);
+	if(it == map.end())
+		it = closest_date(date, map);
+
+	float nb_btc;
+	nb_btc = atof(amount.c_str());
+
+	float result;
+	result = it->second * nb_btc;
+
+	return (result);
 }

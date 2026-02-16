@@ -6,7 +6,7 @@
 /*   By: thodavid <thodavid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 15:43:04 by thodavid          #+#    #+#             */
-/*   Updated: 2026/02/13 11:21:02 by thodavid         ###   ########.fr       */
+/*   Updated: 2026/02/16 13:46:48 by thodavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@ int	main( int ac, char **av ){
 
 	try
 	{
-		// checkfile (check arg)
+		// check arg
 		if(ac != 2 || *av[1] == '\0'){
 			error("Enter one valid file");
 			return (1);
 		}
+		
+		// check file
 		const char *cstr = av[1];
 		std::ifstream input_stream(cstr);
 		if (!input_stream)
@@ -36,35 +38,37 @@ int	main( int ac, char **av ){
 		std::string line;
 		while (getline(input_stream, line))
 		{
-			Error_line e = check_line(line);
-			if (e == ALL_GOOD){
-				std::cout << get_date(line) << " => "
-				<< get_value(line)
-				<< " = "
-				<< print_rslt(line) <<'\n'; 
+			switch(Error_line e = check_line(line)) {
+				case ALL_GOOD:
+				{
+					std::string date = get_date(line);
+					std::string amount = get_amount(line);
+					std::cout << date << " => " << amount
+					<< " = "
+					<< print_rslt(date, amount, map) <<'\n'; 
+				}
+					break;
+				case FORM_ERR:
+					std::cout << "Error:: invalid format" << '\n';
+					break;
+				case DATE_ERR:
+					std::cout << "Error:: invalid date" << '\n';
+					break;
+				case AMOUNT_ERR:
+					std::cout << "Error:: invalid amount" << '\n';
+					break;
 			}
-			else if (e == FORM_ERR)
-				std::cout << "Error:: invalid format" << '\n'; 
-			else if (e == DATE_ERR)
-				std::cout << "Error:: invalid date" << '\n'; 
-			else if (e == AMOUNT_ERR)
-				std::cout << "Error:: invalid amount" << '\n'; 
+
+			// for (std::map<std::string, double>::iterator it = map.begin(); it != map.end();)
+			// {
+			// 	std::cout << it->first << ',' << it->second << '\n';
+			// 	++it;
+			// }
 		}
 	}
 	catch (std::runtime_error& e){
 		std::cout << "Error: " << e.what() << '\n';
 		return (1);
 	}
-	/*
-	   Bitcoin btc(42);
-	   std::map<std::string, int> m;
-	   m["2009-10-01"] = 0;
-
-	//std::map<std::string, int>::const_iterator it;
-	std::map<std::string, int>::const_iterator it = m.begin();
-	std::cout << it->first << '\n';
-	std::cout << it->second<< '\n';
-	std::cout << btc.getSeed() <<'\n';
-	*/
 	return (0);
 }
