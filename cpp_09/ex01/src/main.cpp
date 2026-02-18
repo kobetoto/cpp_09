@@ -1,0 +1,34 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thodavid <thodavid@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/16 14:18:04 by thodavid          #+#    #+#             */
+/*   Updated: 2026/02/18 13:29:22 by thodavid         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "RPN.hpp"
+
+int main(int ac, char **av)
+{
+        try
+        {
+                // check arg
+                if (ac != 2 || *av[1] == '\0')
+                {
+                        error("Enter a valid expression");
+                        return (1);
+                }
+                Zuse_4(av[1]);
+        }
+        catch (std::runtime_error &e)
+        {
+                std::cout << "Error: " << e.what() << '\n';
+                return (1);
+        }
+        return (0);
+}
+
