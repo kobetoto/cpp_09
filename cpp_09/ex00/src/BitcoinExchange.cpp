@@ -6,13 +6,11 @@
 /*   By: thodavid <thodavid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/06 07:33:16 by thodavid          #+#    #+#             */
-/*   Updated: 2026/02/16 13:45:45 by thodavid         ###   ########.fr       */
+/*   Updated: 2026/02/20 10:25:51 by thodavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BitcoinExchange.hpp"
-
-
 
 //
 // Parsing input file
@@ -71,15 +69,6 @@ bool check_amount(std::string s)
 		return (true);
 }
 
-//
-// Print the result:
-// 			BTC price * N.btc
-// to do that:
-//			-open history database (aka db)
-//			-store the date / value in map container
-//			-associate date line(input_file) <==> date (db)
-//			-do the math and print it
-
 void	store_data(std::map<std::string, double> &map){
 		std::ifstream input_stream("data.csv");
 		if (!input_stream)
@@ -96,19 +85,24 @@ void	store_data(std::map<std::string, double> &map){
 		}
 }
 
-
 std::map<std::string, double>::const_iterator closest_date(std::string &date,
 						const std::map<std::string, double> &map){
-	for( std::map<std::string, double>::const_iterator it = map.begin(); it != map.end(); ++it)
-	{
-		if (date < it->first)
-			return it;
-	}
-		return(map.end());
+
+	std::map<std::string, double>::const_iterator it = map.lower_bound(date);
+
+	//same date
+	if (it->first == date)
+		return (it);
+	//futur date
+	if (it == map.end())
+		return(--it);
+
+	if (it == map.begin())
+		error("Error:: date too early");
+
+	--it;
+	return (it);
 }
-
-
-//chercher dans map la bonne valeur a la bonne date si pas la bonne date la plus proche
 
 // multiplier par amount
 float	print_rslt(std::string &date,
@@ -119,6 +113,7 @@ float	print_rslt(std::string &date,
 	it = map.find(date);
 	if(it == map.end())
 		it = closest_date(date, map);
+
 
 	float nb_btc;
 	nb_btc = atof(amount.c_str());

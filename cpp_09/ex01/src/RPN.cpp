@@ -6,7 +6,7 @@
 /*   By: thodavid <thodavid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/18 13:22:02 by thodavid          #+#    #+#             */
-/*   Updated: 2026/02/18 14:35:40 by thodavid         ###   ########.fr       */
+/*   Updated: 2026/02/20 13:48:27 by thodavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ bool is_operator(char c)
 void do_the_math(std::stack<int> &r1, std::stack<int> &r2, char c)
 {
         if (r1.empty() || r2.empty())
-                error("malformed expression(0)");
+                error("wrong expression(0)");
         else
         {
                 int num_r1 = r1.top();
@@ -44,8 +44,12 @@ void do_the_math(std::stack<int> &r1, std::stack<int> &r2, char c)
                         r1.push(num_r2 - num_r1);
                         break;
                 case ('/'):
+                {
+                        if (num_r2 == 0 || num_r1 == 0)
+                                error("wait what!!! '/0' (: core dumped :)");
                         r1.push(num_r2 / num_r1);
                         break;
+                }
                 case ('*'):
                         r1.push(num_r1 * num_r2);
                         break;
@@ -78,7 +82,7 @@ void Zuse_4(const char *expr)
                 if (expr[i] == ' ')
                 {
                         i++;
-                        continue; 
+                        continue;
                 }
                 //operator => compute
                 if (is_operator(expr[i]))
@@ -86,10 +90,12 @@ void Zuse_4(const char *expr)
                 //operand => store
                 else
                 {
+                        if(expr[i+1] && expr[i+1] != ' ')
+                                error("wrong expression (1)");
                         //conversion
                         int operand = expr[i] - '0';
                         if (operand > 9 || operand < 0)
-                                error("malformed expression(1)");
+                                error("wrong expression(2)");
                         
                         //store operand
                         if (r1.empty())
@@ -100,6 +106,6 @@ void Zuse_4(const char *expr)
                 i++;
         }
         if (!r2.empty() || r1.empty()) 
-                error("malformed expression(3)");
+                error("wrong expression(3)");
         std::cout << r1.top() << '\n';
 }

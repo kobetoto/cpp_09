@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_line.cpp                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thodavid <thodavid@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/20 10:26:01 by thodavid          #+#    #+#             */
+/*   Updated: 2026/02/20 10:26:06 by thodavid         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "BitcoinExchange.hpp"
 #include <iostream>
 #include <string>
 #include <stdlib.h>     /* atoi */
@@ -76,4 +89,3 @@ int main(void){
 
   return (0);
 }
-

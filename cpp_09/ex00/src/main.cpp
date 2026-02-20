@@ -6,7 +6,7 @@
 /*   By: thodavid <thodavid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 15:43:04 by thodavid          #+#    #+#             */
-/*   Updated: 2026/02/16 13:46:48 by thodavid         ###   ########.fr       */
+/*   Updated: 2026/02/20 09:35:09 by thodavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	main( int ac, char **av ){
 			return (1);
 		}
 		
-		// check file
+		// check input file
 		const char *cstr = av[1];
 		std::ifstream input_stream(cstr);
 		if (!input_stream)
